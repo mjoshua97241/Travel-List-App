@@ -7,11 +7,18 @@ const initialItems = [
 ];
 
 export default function App() {
+  // Lift up state - when multiple component (siblings) shared data
+  const [items, setItems] = useState([]); //empty array
+
+  function handleAddItems(item) {
+    setItems((items) => [...items, item]); //make a copy by using spread operator [...]
+  }
+
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
+      <Form onAddItems={handleAddItems} />
+      <PackingList items={items} />
       <Stats />
     </div>
   );
@@ -21,7 +28,7 @@ function Logo() {
   return <h1>🌴Far away 💼</h1>;
 }
 
-function Form() {
+function Form({ onAddItems }) {
   /*
   👉 Controlled Elements - React is the one who controlled the state
     How to do it?
@@ -41,6 +48,8 @@ function Form() {
 
     const newItem = { description, quantity, packed: false, id: Date.now() };
     console.log(newItem);
+
+    onAddItems(newItem);
 
     // Back to Initial State
     setDescription("");
@@ -77,11 +86,11 @@ function Form() {
   );
 }
 
-function PackingList() {
+function PackingList({ items }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => (
+        {items.map((item) => (
           <Item item={item} key={item.id} />
         ))}
       </ul>
@@ -203,4 +212,5 @@ FUNDAMENTALS OF STATE MANAGEMENT
                     👉 Probably **global state**. Global state management later in the course...
 
 
+THINKING ABOUT STATE AND LIFT STATE UP
 */
