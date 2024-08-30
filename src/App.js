@@ -7,18 +7,23 @@ const initialItems = [
 ];
 
 export default function App() {
-  // Lift up state - when multiple component (siblings) shared data
+  // Lift up state - when multiple component (siblings) shared data and need to bring the data to the parent component
   const [items, setItems] = useState([]); //empty array
 
   function handleAddItems(item) {
     setItems((items) => [...items, item]); //make a copy by using spread operator [...]
   }
 
+  function handleDeleteItem(id) {
+    // Need to know which item should be deleted by using the id, use filter method
+    setItems((items) => items.filter((item) => item.id !== id));
+  }
+
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackingList items={items} />
+      <PackingList items={items} onDeleteItem={handleDeleteItem} />
       <Stats />
     </div>
   );
@@ -86,25 +91,25 @@ function Form({ onAddItems }) {
   );
 }
 
-function PackingList({ items }) {
+function PackingList({ items, onDeleteItem }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item item={item} key={item.id} />
+          <Item item={item} key={item.id} onDeleteItem={onDeleteItem} />
         ))}
       </ul>
     </div>
   );
 }
 
-function Item({ item }) {
+function Item({ item, onDeleteItem }) {
   return (
     <li>
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.quantity} {item.description}
       </span>
-      <button>❌</button>
+      <button onClick={() => onDeleteItem(item.id)}>❌</button>
     </li>
   );
 }
