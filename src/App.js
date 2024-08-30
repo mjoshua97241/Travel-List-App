@@ -131,4 +131,76 @@ function Stats() {
     💡 Connection between the props and state
       - Whenever a piece of state is passed as a props, when the state updates, both components are re-rendered. Both the component owning the state and the component receiving the state as a prop, and so this is a very important connection between state and props.
 
+"**THINKING** IN REACT" IS A CORE SKILL
+
+  HOW TO WORK WITH REACT API
+          +     This is where professional React apps where built
+  THINKING IN REACT
+    👉 "React Mindset"
+    👉 Thinking about coponent, state, data flow, effects, etc.
+    👉 Thinking in **state transitions**, not element mutations
+
+  "THINKING IN REACT" AS A **PROCESS**
+    Note: Not a rigid process
+
+    1. Break the desired UI nto **components** and establish the **component tree**
+    2. Build a **static** version in React (without state)
+    3. Think about **state**
+      👉 When to use state
+      👉 Types of state: local vs global
+      👉 Where to place each piece of state
+    4. Establish **data flow**:
+      👉 One-way data flow
+      👉 Child-to-parent communication
+      👉 Accessing global state
+    
+  WHEN YOU KNOW HOW TO "THINK IN REACT", YOU WILL BE ABLE TO ANSWER:
+    🤔 How to break up a UI design into components?
+    🤔 How to make some components resusable?
+    🤔 How to assemble UI from reusable components?
+    🤔 What pieces of state do I need for interactivity?
+    🤔 Where to place state? (What component should "own" each peice of state?)
+    🤔 What types of state can or should I use?
+    🤔 How to make data flow through app? 
+
+
+FUNDAMENTALS OF STATE MANAGEMENT
+
+  What is state **management**?
+    👉 **State management**: Deciding **when** to create pieces of state, what **types** of state are necessary, **where** to place each piece of state, and how data **flows** through app -> 🏡 Giving each piece of state a **home**
+
+  **TYPES** OF STATE: LOCAL VS GLOBAL STATE
+    📚 GLOBAL STATE
+      👉 State that **many components** might need
+      👉 **share** state that is accessible to **every component** in the entire application
+
+    📚 LOCAL STATE
+      👉 State needed **only by one or few components**
+      👉 State that is defined in a component and **only that component and child components** have access to it (by passing via props)
+
+      ☝ **We should always start with local state**
+
+  STATE: WHEN & Where?
+    (Refer to pdf for diagram)
+
+    Need to store data
+      ▶ Will data change at some point? 🚫 ➡ **Regular** const variable
+        ✅ 🔻
+         ➡ Can be computed from existing state/props? ✅ ➡ Derive state
+         🚫🔻
+          ➡ Should i re-render component? 🚫 ➡ Ref (useRef, more on this later)
+          ✅ 🔻
+            ➡ Place a new piece of state in component ("Always start with local state")
+    WHEN to create state ------------------------------------------------------------------
+    WHERE to create state ------------------------------------------------------------------
+            🔻
+            ➡ Only used by this component? ✅ ➡ Leave in component
+              🚫🔻
+                ➡ Also used by a child component? ✅ ➡ Pass to child via props
+                🚫🔻
+                  ➡ Used by one or a few sibling components? ✅ ➡ Lift state up to first common parent
+                  🚫🔻
+                    👉 Probably **global state**. Global state management later in the course...
+
+
 */
