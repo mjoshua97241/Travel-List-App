@@ -19,12 +19,24 @@ export default function App() {
     setItems((items) => items.filter((item) => item.id !== id));
   }
 
+  function handleToggleItem(id) {
+    setItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item
+      )
+    );
+  }
+
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackingList items={items} onDeleteItem={handleDeleteItem} />
-      <Stats />
+      <PackingList
+        items={items}
+        onDeleteItem={handleDeleteItem}
+        onToggleItem={handleToggleItem}
+      />
+      <Stats items={items} />
     </div>
   );
 }
@@ -52,7 +64,7 @@ function Form({ onAddItems }) {
     if (!description) return;
 
     const newItem = { description, quantity, packed: false, id: Date.now() };
-    console.log(newItem);
+    // console.log(newItem);
 
     onAddItems(newItem);
 
@@ -91,21 +103,31 @@ function Form({ onAddItems }) {
   );
 }
 
-function PackingList({ items, onDeleteItem }) {
+function PackingList({ items, onDeleteItem, onToggleItem }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item item={item} key={item.id} onDeleteItem={onDeleteItem} />
+          <Item
+            item={item}
+            key={item.id}
+            onDeleteItem={onDeleteItem}
+            onToggleItem={onToggleItem}
+          />
         ))}
       </ul>
     </div>
   );
 }
 
-function Item({ item, onDeleteItem }) {
+function Item({ item, onDeleteItem, onToggleItem }) {
   return (
     <li>
+      <input
+        type="checkbox"
+        value={item.packed}
+        onChange={() => onToggleItem(item.id)}
+      />
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.quantity} {item.description}
       </span>
@@ -114,10 +136,26 @@ function Item({ item, onDeleteItem }) {
   );
 }
 
-function Stats() {
+function Stats({ items }) {
+  if (!items.length)
+    return (
+      <p className="stats">
+        <em>Start adding some items to your packing list 🚀</em>
+      </p>
+    );
+
+  const numItems = items.length;
+  const numPacked = items.filter((item) => item.packed).length;
+  const percentage = Math.round((numPacked / numItems) * 100);
+
   return (
     <footer className="stats">
-      <em>💼 You have X items on your list, and you already packed X (X%)</em>
+      <em>
+        {percentage === 100
+          ? "You got everthing! Ready to go ✈"
+          : `💼 You have ${numItems} items on your list, and you already packed
+        ${numPacked} (${percentage}%)`}
+      </em>
     </footer>
   );
 }
@@ -218,4 +256,36 @@ FUNDAMENTALS OF STATE MANAGEMENT
 
 
 THINKING ABOUT STATE AND LIFT STATE UP
+
+
+DERIVING STATE
+  👍 **Derived state**: state that is computed from an existing piece of state or from props
+
+    ❌ Bad sample of code
+      const [cart, setCart] = useState([
+        {name: "JavaScript Course", price: 15.99},
+        {name: "Node.js Bootcamp", price: 14.99},
+      ]);
+
+      const {numItems, setNumItems} = useState(2); 
+      const {totalPrice, setTotalPrice} = useState(30.98);
+    
+    🗣 Explanation:
+      👎 3 seperate pieces of state, even though numItems and totalPrice depend on cart
+      👎 Need to keep them in sync (update together)
+      👎 3 state updates will cause 3 re-renders
+
+    ✅ DERIVING STATE
+       const [cart, setCart] = useState([
+        {name: "JavaScript Course", price: 15.99},
+        {name: "Node.js Bootcamp", price: 14.99},
+      ]);
+
+      const numtItems = cart.length;
+      const totalPrice = cart.reduce((acc, cur) => acc + cur.price, 0);
+
+    🗣 Explanation:
+      👍 Just regular variables, no useState
+      👍 cart state is the **single source of truth** for this related data
+      👍 Works because re-rendering component will **automatically re-calculate** derived state
 */
